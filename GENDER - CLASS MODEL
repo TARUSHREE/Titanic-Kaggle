@@ -1,0 +1,21 @@
+R CODE
+GENDER – CLASS MODEL
+
+### Analysed sex attribute, found that majority of female were saved compared to male.
+Hence set the test tuples with sex value='female' to survive and male to not survive.
+
+#summary of Sex
+summary(train$Sex)
+#expand the proportion table command
+prop.table(table(train$Sex,train$Survived))
+# row-wise proportion
+#proportions in the 1st dimension which stands for the rows (using '2' instead would give you column
+proportions
+prop.table(table(train$Sex,train$Survived),1)
+#change submission
+test$Survived <- 0
+test$Survived[test$Sex == 'female'] <- 1
+#submit 2
+submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
+
+
