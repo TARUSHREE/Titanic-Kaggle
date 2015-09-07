@@ -9,5 +9,5 @@ Following data is provided to us:
 
 Classification is achieved using python, R(RStudio) and random forest.
 
-# Implementation done using R (RStudio).
+Implementation done using R (RStudio).
 
