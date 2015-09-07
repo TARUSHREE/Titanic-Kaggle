@@ -19,3 +19,29 @@ test$Survived[test$Sex == 'female'] <- 1
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 
 
+### Applied binning for fair attribute in the data set, divided it into equi-frequency bins and
+analysed it.
+
+
+summary(train$Age)
+#on the basis of age divide as below 18 or abovetrain$Child <- 0
+train$Child[train$Age < 18] <-1
+#table with both gender and age to see the survival proportions for different subsets
+#number of survivors for the different subsets
+aggregate(Survived ~ Child + Sex,data=train, FUN=sum)
+#total no. of ppl
+aggregate(Survived ~ Child + Sex, data=train, FUN=length)
+aggregate(Survived ~ Child + Sex, data=train, FUN=function(x){sum(x)/length(x)})
+#class and fare taken into consideration
+train$Fare2 <- '30+'
+train$Fare2[train$Fare <30 & train$Fare >=20] <- '20-30'
+train$Fare2[train$Fare <20 & train$Fare >= 10] <- '10-20'
+train$Fare2[train$Fare < 10] <- '<10'
+aggregate(Survived ~ Fare2 + Pclass + Sex,data=train, FUN=function(x){sum(x)/length(x)} )
+test$Survived <- 0
+test$Survived[test$Sex == 'female'] <- 1
+test$Survived[test$Sex == 'female' &test$Pclass == 3 & test$Fare >= 20] <- 0
+#submit3
+submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
+
+
