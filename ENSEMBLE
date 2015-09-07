@@ -1,0 +1,35 @@
+ENSEMBLE
+
+# ensemble models work, they grow a lot of different models, and let their outcomes be averaged or
+voted across the group
+#Bagging takes a randomized sample of the rows in your training set, with replacement
+sample(1:10, replace = TRUE)
+summary(combi$Age)
+# method="anova" version of our decision tree, as we are not trying to predict a category any more, but
+a continuous variable
+Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+data=combi[!is.na(combi$Age),], method="anova")
+combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+summary(combi)# reduce the number of trees, at least for initial exploration, or restrict the complexity of each tree using
+nodesize as well as reduce the number of rows sampled with sampsize. You can also override the
+default number of variables to choose from with mtry, but the default is the square root of the total
+number available and that should work just fine.
+which(combi$Embarked == '')
+combi$Embarked[c(62,830)] = "S"
+combi$Embarked <- factor(combi$Embarked)
+summary(combi$Fare)
+which(is.na(combi$Fare))
+combi$Fare[1044] <- median(combi$Fare, na.rm=TRUE)
+combi$FamilyID2 <- combi$FamilyID
+combi$FamilyID2 <- as.character(combi$FamilyID2)
+combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
+combi$FamilyID2 <- factor(combi$FamilyID2)
+install.packages('randomForest')
+library(randomForest)
+set.seed(415)
+fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked +
+Title + FamilySize +
+FamilyID2, data=train, importance=TRUE, ntree=2000)
+varImpPlot(fit)
+Prediction <- predict(fit, test)
+submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
